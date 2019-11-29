@@ -20,7 +20,18 @@ for i in range(0, 20):
     ]))
 
 while True:
-    print(len(world.inhabitants))
+    total = len(world.inhabitants)
+    males = 0
+    females = 0
+
+    for inhabitant in world.inhabitants:
+        if inhabitant.gender == inhabitants.MALE:
+            males += 1
+
+        if inhabitant.gender == inhabitants.FEMALE:
+            females += 1 
+
+    print("Total:", len(world.inhabitants), "Males:", males, "Females:", females)
 
     world.tick()
 
