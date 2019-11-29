@@ -76,31 +76,31 @@ try:
             inhabitantLabel = input("New inhabitant's label? (Leave blank to generate) > ")
 
             inhabitantPropertyPairs = []
-            firstPropertyID = "-"
-            secondPropertyID = "-"
+            firstPropertyLabel = "-"
+            secondPropertyLabel = "-"
 
-            while firstPropertyID != "":
-                firstPropertyID = input("First property ID in property pair? (Leave blank to exit listing) > ")
+            while firstPropertyLabel != "":
+                firstPropertyLabel = input("First property label in property pair? (Leave blank to exit listing) > ")
 
-                if firstPropertyID != "":
-                    secondPropertyID = input("Second property ID in property pair? > ")
+                if firstPropertyLabel != "":
+                    secondPropertyLabel = input("Second property label in property pair? > ")
 
-                if firstPropertyID != "" and secondPropertyID != "":
+                if firstPropertyLabel != "" and secondPropertyLabel != "":
                     firstProperty = None
                     secondProperty = None
 
                     for propertyObject in propertySet:
-                        if propertyObject.label == firstPropertyID:
+                        if propertyObject.label == firstPropertyLabel:
                             firstProperty = propertyObject
                         
-                        if propertyObject.label == secondPropertyID:
+                        if propertyObject.label == secondPropertyLabel:
                             secondProperty = propertyObject
 
                     if firstProperty == None:
-                        print("First property ID not found in property set!")
+                        print("First property label not found in property set!")
 
                     if secondProperty == None:
-                        print("Second property ID not found in property set!")
+                        print("Second property label not found in property set!")
                     
                     if firstProperty == None or secondProperty == None:
                         print("Property pair could not be made!")
@@ -121,31 +121,31 @@ try:
             # New batch creation of inhabitants
 
             inhabitantPropertyPairs = []
-            firstPropertyID = "-"
-            secondPropertyID = "-"
+            firstPropertyLabel = "-"
+            secondPropertyLabel = "-"
 
-            while firstPropertyID != "":
-                firstPropertyID = input("First property ID in property pair? (Leave blank to exit listing) > ")
+            while firstPropertyLabel != "":
+                firstPropertyLabel = input("First property label in property pair? (Leave blank to exit listing) > ")
 
-                if firstPropertyID != "":
-                    secondPropertyID = input("Second property ID in property pair? > ")
+                if firstPropertyLabel != "":
+                    secondPropertyLabel = input("Second property label in property pair? > ")
 
-                if firstPropertyID != "" and secondPropertyID != "":
+                if firstPropertyLabel != "" and secondPropertyLabel != "":
                     firstProperty = None
                     secondProperty = None
 
                     for propertyObject in propertySet:
-                        if propertyObject.label == firstPropertyID:
+                        if propertyObject.label == firstPropertyLabel:
                             firstProperty = propertyObject
                         
-                        if propertyObject.label == secondPropertyID:
+                        if propertyObject.label == secondPropertyLabel:
                             secondProperty = propertyObject
 
                     if firstProperty == None:
-                        print("First property ID not found in property set!")
+                        print("First property label not found in property set!")
 
                     if secondProperty == None:
-                        print("Second property ID not found in property set!")
+                        print("Second property label not found in property set!")
                     
                     if firstProperty == None or secondProperty == None:
                         print("Property pair could not be made!")
@@ -176,13 +176,77 @@ try:
                     print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (gender: female, fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
                 else:
                     print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (gender: (unknown), fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
+        elif command == "inspect inhabitant":
+            inhabitantLabel = input("Label of inhabitant to inspect? (Leave blank to cancel) > ")
+
+            for inhabitant in world.inhabitants:
+                if inhabitant.label == inhabitantLabel:
+                    if inhabitant.gender == inhabitants.MALE:
+                        print("gender: male")
+                    elif inhabitant.gender == inhabitants.FEMALE:
+                        print("gender: female")
+                    else:
+                        print("gender: (unknown)")
+                
+                    print("fertility: " + str(inhabitant.fertility))
+                    print("decay: " + str(inhabitant.decay))
+                    print("property pairs:")
+
+                    for propertyPair in inhabitant.propertyPairs:
+                        print("    - (dominant: " + str(propertyPair.dominantProperty.label) + ")")
+                        print("        - " + str(propertyPair.firstProperty.label))
+                        print("        - " + str(propertyPair.secondProperty.label))
+
+                    print("expressed properties:")
+
+                    for propertyObject in inhabitant.expressedProperties:
+                        print("    - " + str(propertyObject.label))
+        elif command == "calculate property adoption":
+            # Calculate a property's adoption rate
+
+            propertyLabel = input("Property label to use in calculation? (Leave blank to cancel) > ")
+
+            totalInhabitants = 0
+            totalAdoption = 0
+            totalExpression = 0
+
+            for propertyObject in propertySet:
+                if propertyObject.label == propertyLabel:
+                    totalInhabitants = 0
+                    totalAdoption = 0
+                    totalExpression = 0
+
+                    for inhabitant in world.inhabitants:
+                        totalInhabitants += 1
+
+                        hasAdoption = False
+
+                        for propertyPair in inhabitant.propertyPairs:
+                            if propertyPair.firstProperty == propertyObject or propertyPair.secondProperty == propertyObject:
+                                hasAdoption = True
+                            
+                        if propertyObject in inhabitant.expressedProperties:
+                            hasAdoption = True
+                            totalExpression += 1
+
+                        if hasAdoption:
+                            totalAdoption += 1
+
+            if totalInhabitants != 0:
+                print("Total adoption: " + str(totalAdoption) + "/" + str(totalInhabitants) + " (" + str((totalAdoption / totalInhabitants) * 100) + "%)")
+                print("Total expression: " + str(totalExpression) + "/" + str(totalInhabitants) + " (" + str((totalExpression / totalInhabitants) * 100) + "%)")
+            else:
+                print("No inhabitants to calculate adoption with!")
         else:
             print("Command not understood!")
 
         if commandRepetition > 0:
             commandRepetition -= 1
 
-            print("Repeating command " + str(commandRepetition) + " times")
+            if commandRepetition > 0:
+                print("Repeating command " + str(commandRepetition) + " times")
+            else:
+                print("Finished repeating command")
 except KeyboardInterrupt:
     print("")
     print("*Mutters really quickly before Pythons bite the exception* Goodbye")

@@ -49,7 +49,7 @@ class Inhabitant:
             # Only females can make offspring
 
             if random.randint(0, 4) == 0:
-                # The inhabitant must consent in order to reproduce
+                # The inhabitant must give consent in order to reproduce
 
                 if malePartner.fertility > 0 and self.fertility > 0:
                     # The male and female partners must be fertile
@@ -60,16 +60,20 @@ class Inhabitant:
                     passedPropertyPairs = []
 
                     for propertyID in range(0, len(self.propertyPairs)):
+                        firstProperty = None
+                        secondProperty = None
+
                         if random.randint(0, 1) == 1:
-                            passedPropertyPairs.append(properties.PropertyPair(
-                                self.propertyPairs[propertyID].firstProperty,
-                                malePartner.propertyPairs[propertyID].secondProperty
-                            ))
+                            firstProperty = self.propertyPairs[propertyID].firstProperty
                         else:
-                            passedPropertyPairs.append(properties.PropertyPair(
-                                self.propertyPairs[propertyID].secondProperty,
-                                malePartner.propertyPairs[propertyID].firstProperty
-                            ))
+                            firstProperty = self.propertyPairs[propertyID].secondProperty
+
+                        if random.randint(0, 1) == 1:
+                            secondProperty = malePartner.propertyPairs[propertyID].firstProperty
+                        else:
+                            secondProperty = malePartner.propertyPairs[propertyID].secondProperty
+
+                        passedPropertyPairs.append(properties.PropertyPair(firstProperty, secondProperty))
 
                     return Inhabitant(passedPropertyPairs)
                 else:

@@ -15,6 +15,7 @@ class PropertyPair:
     def __init__(self, firstProperty, secondProperty):
         self.firstProperty = firstProperty
         self.secondProperty = secondProperty
+        self.dominantProperty = None
 
         self.selectDominantProperty()
     
