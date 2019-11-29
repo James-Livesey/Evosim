@@ -33,13 +33,14 @@ class Inhabitant:
                 self.gender = FEMALE
 
         self.fertility = random.randint(0, 5)
-        self.decay = random.randint(0, 100)
+        self.decay = random.randint(1, 100)
 
         if self.gender == MALE:
             self.label = "I_" + str(inhabitantIterator) + "_M"
-
-        if self.gender == FEMALE:
+        elif self.gender == FEMALE:
             self.label = "I_" + str(inhabitantIterator) + "_F"
+        else:
+            self.label = "I_" + str(inhabitantIterator)
 
         inhabitantIterator += 1
 

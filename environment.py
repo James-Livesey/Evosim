@@ -1,3 +1,5 @@
+import random
+
 import inhabitants
 
 conditionIterator = 0
@@ -64,6 +66,11 @@ class Environment:
 
             if inhabitant.gender == inhabitants.FEMALE:
                 femaleInhabitants.append(inhabitant)
+
+        # Shuffle inhabitant arrays otherwise oldest inhabitants will be selected first, and they may have low fertility
+
+        random.shuffle(maleInhabitants)
+        random.shuffle(femaleInhabitants)
 
         # Start reproduction
 

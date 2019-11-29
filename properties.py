@@ -16,6 +16,9 @@ class PropertyPair:
         self.firstProperty = firstProperty
         self.secondProperty = secondProperty
 
+        self.selectDominantProperty()
+    
+    def selectDominantProperty(self):
         if self.firstProperty.isDominant:
             self.dominantProperty = self.firstProperty
         elif self.secondProperty.isDominant:
