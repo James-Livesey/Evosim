@@ -1,8 +1,15 @@
 import random
 
+propertyIterator = 0
+
 class Property:
     def __init__(self, isDominant = False):
+        global propertyIterator
+
         self.isDominant = isDominant
+
+        self.label = "P_" + str(propertyIterator)
+        propertyIterator += 1
 
 class PropertyPair:
     def __init__(self, firstProperty, secondProperty):

@@ -1,5 +1,7 @@
 import inhabitants
 
+conditionIterator = 0
+
 class Environment:
     def __init__(self):
         self.inhabitants = []
@@ -18,6 +20,8 @@ class Environment:
                 if condition.affectingProperty in self.inhabitants[inhabitantID].expressedProperties:
                     # Inhabitant dies due to condition
 
+                    print("Inhabitant " + str(self.inhabitants[inhabitantID].label) + " died due to condition " + condition.label)
+
                     self.inhabitants[inhabitantID] = None
 
             self.inhabitants = [inhabitant for inhabitant in self.inhabitants if inhabitant is not None]
@@ -29,6 +33,8 @@ class Environment:
             if self.conditions[conditionID].decay == 0:
                 # Condition has fully decayed
 
+                print("Condition " + str(self.conditions[conditionID].label) + " decayed")
+
                 self.conditions[conditionID] = None
 
         self.conditions = [condition for condition in self.conditions if condition is not None]                
@@ -39,6 +45,8 @@ class Environment:
 
             if self.inhabitants[inhabitantID].decay == 0:
                 # Inhabitant dies due to old age
+
+                print("Inhabitant " + str(self.inhabitants[inhabitantID].label) + " decayed")
 
                 self.inhabitants[inhabitantID] = None
 
@@ -60,7 +68,10 @@ class Environment:
         # Start reproduction
 
         while len(femaleInhabitants) != 0 and len(maleInhabitants) != 0:
-            offspring = femaleInhabitants[0].reproduce(maleInhabitants[0])
+            mother = femaleInhabitants[0]
+            father = maleInhabitants[0]
+
+            offspring = mother.reproduce(father)
 
             maleInhabitants.pop(0)
             femaleInhabitants.pop(0)
@@ -68,7 +79,14 @@ class Environment:
             if isinstance(offspring, inhabitants.Inhabitant):
                 self.inhabitants.append(offspring)
 
+                print("Inhabitants " + str(mother.label) + " and " + str(father.label) + " reproduced to make new inhabitant " + str(offspring.label))
+
 class Condition:
     def __init__(self, affectingProperty, decay = 5):
+        global conditionIterator
+
         self.affectingProperty = affectingProperty
         self.decay = decay
+
+        self.label = "C_" + str(conditionIterator) + "_" + self.affectingProperty.label
+        conditionIterator += 1
