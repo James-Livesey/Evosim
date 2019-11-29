@@ -177,6 +177,8 @@ try:
                 else:
                     print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (gender: (unknown), fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
         elif command == "inspect inhabitant":
+            # Inspect an inhabitant
+
             inhabitantLabel = input("Label of inhabitant to inspect? (Leave blank to cancel) > ")
 
             for inhabitant in world.inhabitants:
@@ -201,6 +203,37 @@ try:
 
                     for propertyObject in inhabitant.expressedProperties:
                         print("    - " + str(propertyObject.label))
+        elif command == "new condition":
+            # New condition
+
+            conditionLabel = input("New condition's label? (Leave blank to generate) > ")
+            affectingPropertyLabel = input("Affecting property's label? (Leave blank to cancel) > ")
+
+            try:
+                decay = int(input("Decay length? (Leave blank for 5) > "))
+            except:
+                decay = 5
+
+            try:
+                for propertyObject in propertySet:
+                    if propertyObject.label == affectingPropertyLabel:
+                        affectingProperty = propertyObject
+
+                        newCondition = environment.Condition(affectingProperty, decay)
+
+                        if conditionLabel != "":
+                            newCondition.label = conditionLabel
+                        
+                        world.conditions.append(newCondition)
+
+                        print("New condition " + str(newCondition.label) + " created")
+            except:
+                pass
+        elif command == "list conditions":
+            # List conditions
+
+            for conditionID in range(0, len(world.conditions)):
+                print("[" + str(conditionID) + "] " + str(world.conditions[conditionID].label) + " (affecting property: " + str(world.conditions[conditionID].affectingProperty.label) + ", decay: " + str(world.conditions[conditionID].decay) + ")")
         elif command == "calculate property adoption":
             # Calculate a property's adoption rate
 
