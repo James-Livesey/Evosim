@@ -18,7 +18,7 @@ commandRepetition = 0
 try:
     while True:
         if commandRepetition == 0:
-            command = input("Evosim > ")
+            command = input("Evosim > ").lower().strip()
 
         if command == "":
             # Tick
@@ -72,6 +72,14 @@ try:
             print("Goodbye")
             
             exit()
+        elif command == "help":
+            # Display help information
+
+            helpfile = open("README.md", "r")
+
+            print(helpfile.read())
+
+            helpfile.close()
         elif command == "repeat":
             # Repeat command
 
