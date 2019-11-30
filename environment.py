@@ -6,10 +6,15 @@ conditionIterator = 0
 
 class Environment:
     def __init__(self):
+        self.tickcount = 0
         self.inhabitants = []
         self.conditions = []
 
     def tick(self):
+        self.tickcount += 1
+
+        print("Ticking world to " + str(self.tickcount))
+
         self.useConditions()
         self.decayConditions()
 
@@ -78,7 +83,7 @@ class Environment:
             mother = femaleInhabitants[0]
             father = maleInhabitants[0]
 
-            offspring = mother.reproduce(father)
+            offspring = mother.reproduce(father, self.tickcount)
 
             maleInhabitants.pop(0)
             femaleInhabitants.pop(0)
@@ -89,8 +94,10 @@ class Environment:
                 print("Inhabitants " + str(mother.label) + " and " + str(father.label) + " reproduced to make new inhabitant " + str(offspring.label))
 
 class Condition:
-    def __init__(self, affectingProperty, decay = 5):
+    def __init__(self, birthtick, affectingProperty, decay = 5):
         global conditionIterator
+
+        self.birthtick = birthtick
 
         self.affectingProperty = affectingProperty
         self.decay = decay

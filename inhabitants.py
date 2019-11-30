@@ -14,8 +14,10 @@ MALE = 0
 FEMALE = 1
 
 class Inhabitant:
-    def __init__(self, passedPropertyPairs):
+    def __init__(self, birthtick, passedPropertyPairs):
         global inhabitantIterator
+
+        self.birthtick = birthtick
 
         self.propertyPairs = passedPropertyPairs
         self.expressedProperties = []
@@ -44,7 +46,7 @@ class Inhabitant:
 
         inhabitantIterator += 1
 
-    def reproduce(self, malePartner):
+    def reproduce(self, malePartner, birthtick):
         if self.gender == FEMALE:
             # Only females can make offspring
 
@@ -59,7 +61,7 @@ class Inhabitant:
 
                     passedPropertyPairs = []
 
-                    for propertyID in range(0, len(self.propertyPairs)):
+                    for propertyID in range(0, min(len(self.propertyPairs), len(malePartner.propertyPairs))):
                         firstProperty = None
                         secondProperty = None
 
@@ -75,7 +77,7 @@ class Inhabitant:
 
                         passedPropertyPairs.append(properties.PropertyPair(firstProperty, secondProperty))
 
-                    return Inhabitant(passedPropertyPairs)
+                    return Inhabitant(birthtick, passedPropertyPairs)
                 else:
                     return None
             else:

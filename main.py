@@ -109,7 +109,7 @@ try:
                 else:
                     print("Exited listing")
 
-            newInhabitant = inhabitants.Inhabitant(inhabitantPropertyPairs)
+            newInhabitant = inhabitants.Inhabitant(world.tickcount, inhabitantPropertyPairs)
 
             if inhabitantLabel != "":
                 newInhabitant.label = inhabitantLabel
@@ -159,7 +159,7 @@ try:
                     for propertyPair in inhabitantPropertyPairs:
                         propertyPair.selectDominantProperty()
 
-                    newInhabitant = inhabitants.Inhabitant(inhabitantPropertyPairs)
+                    newInhabitant = inhabitants.Inhabitant(world.tickcount, inhabitantPropertyPairs)
 
                     world.inhabitants.append(newInhabitant)
 
@@ -171,11 +171,11 @@ try:
 
             for inhabitantID in range(0, len(world.inhabitants)):
                 if world.inhabitants[inhabitantID].gender == inhabitants.MALE:
-                    print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (gender: male, fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
+                    print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (birthtick: " + str(world.inhabitants[inhabitantID].birthtick) + ", age: " + str(world.tickcount - world.inhabitants[inhabitantID].birthtick) + ", gender: male, fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
                 elif world.inhabitants[inhabitantID].gender == inhabitants.FEMALE:
-                    print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (gender: female, fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
+                    print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (birthtick: " + str(world.inhabitants[inhabitantID].birthtick) + ", age: " + str(world.tickcount - world.inhabitants[inhabitantID].birthtick) + ", gender: female, fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
                 else:
-                    print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (gender: (unknown), fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
+                    print("[" + str(inhabitantID) + "] " + str(world.inhabitants[inhabitantID].label) + " (birthtick: " + str(world.inhabitants[inhabitantID].birthtick) + ", age: " + str(world.tickcount - world.inhabitants[inhabitantID].birthtick) + ", gender: (unknown), fertility: " + str(world.inhabitants[inhabitantID].fertility) + ", decay: " + str(world.inhabitants[inhabitantID].decay) + ")")
         elif command == "inspect inhabitant":
             # Inspect an inhabitant
 
@@ -219,7 +219,7 @@ try:
                     if propertyObject.label == affectingPropertyLabel:
                         affectingProperty = propertyObject
 
-                        newCondition = environment.Condition(affectingProperty, decay)
+                        newCondition = environment.Condition(world.tickcount, affectingProperty, decay)
 
                         if conditionLabel != "":
                             newCondition.label = conditionLabel
@@ -233,7 +233,7 @@ try:
             # List conditions
 
             for conditionID in range(0, len(world.conditions)):
-                print("[" + str(conditionID) + "] " + str(world.conditions[conditionID].label) + " (affecting property: " + str(world.conditions[conditionID].affectingProperty.label) + ", decay: " + str(world.conditions[conditionID].decay) + ")")
+                print("[" + str(conditionID) + "] " + str(world.conditions[conditionID].label) + " (birthtick: " + str(world.conditions[conditionID].birthtick) + ", age: " + str(world.tickcount - world.conditions[conditionID].birthtick) + ", affecting property: " + str(world.conditions[conditionID].affectingProperty.label) + ", decay: " + str(world.conditions[conditionID].decay) + ")")
         elif command == "calculate property adoption":
             # Calculate a property's adoption rate
 
