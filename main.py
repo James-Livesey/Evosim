@@ -1,4 +1,6 @@
 import time
+import os
+import json
 
 import environment
 import inhabitants
@@ -8,6 +10,8 @@ TTY_SEPERATOR = "-" * 80
 
 world = environment.Environment()
 propertySet = [inhabitants.maleGender, inhabitants.femaleGender]
+
+worldInhabitantHistory = []
 
 commandRepetition = 0
 
@@ -35,6 +39,33 @@ try:
             print(TTY_SEPERATOR)
             print("Total inhabitants: " + str(totalInhabitants) + " (" + str(maleInhabitants) + " male inhabitants, " + str(femaleInhabitants) + " female inhabitants)")
             print(TTY_SEPERATOR)
+
+            newHistoryEntry = {
+                "total": totalInhabitants,
+                "properties": {}
+            }
+
+            for propertyObject in propertySet:
+                newHistoryEntry["properties"][propertyObject.label] = {
+                    "adoption": 0,
+                    "expression": 0
+                }
+
+                for inhabitant in world.inhabitants:
+                    hasAdoption = False
+
+                    for propertyPair in inhabitant.propertyPairs:
+                        if propertyPair.firstProperty == propertyObject or propertyPair.secondProperty == propertyObject:
+                            hasAdoption = True
+                        
+                    if propertyObject in inhabitant.expressedProperties:
+                        hasAdoption = True
+                        newHistoryEntry["properties"][propertyObject.label]["expression"] += 1
+
+                    if hasAdoption:
+                        newHistoryEntry["properties"][propertyObject.label]["adoption"] += 1
+            
+            worldInhabitantHistory.append(newHistoryEntry)
         elif command == "exit":
             # Exit Evosim
 
@@ -270,6 +301,74 @@ try:
                 print("Total expression: " + str(totalExpression) + "/" + str(totalInhabitants) + " (" + str((totalExpression / totalInhabitants) * 100) + "%)")
             else:
                 print("No inhabitants to calculate adoption with!")
+        elif command == "export inhabitant history to json":
+            # Export the world's inhabitant history to a JSON file
+
+            filename = input("Filename to export to? (Leave blank to cancel) > ")
+
+            if filename != "":
+                try:
+                    if not os.path.exists("exports"):
+                            os.makedirs("exports")
+                    
+                    file = open(os.path.join("exports", *filename.split("/")), "w")
+                        
+                    file.write(json.dumps({"data": worldInhabitantHistory}))
+                    file.close()
+
+                    print("Written export to exports/" + str(filename))
+                except:
+                    print("Could not write export!")
+        elif command == "graph inhabitant history":
+            # Graph the world's inhabitant history to a file
+
+            filename = input("Filename to graph to? (Leave blank to cancel) > ")
+
+            if filename != "":
+                try:
+                    width = 1
+
+                    try:
+                        width = int(input("Width condensation of graph data? (Leave blank for 1) > "))
+                    except:
+                        pass
+
+                    graphHeading = []
+                    graphData = []
+
+                    for tickcount in range(0, len(worldInhabitantHistory)):
+                        graphX = list((" " * (worldInhabitantHistory[tickcount]["total"] // width)) + "  ")
+
+                        if len(graphHeading) < ((worldInhabitantHistory[tickcount]["total"] // width) + 10):
+                            graphHeading = list((" " * (worldInhabitantHistory[tickcount]["total"] // width)) + "          ")
+
+                        for propertyLabel in worldInhabitantHistory[tickcount]["properties"]:
+                            propertyRepresentation = propertyLabel[0]
+
+                            graphX[(worldInhabitantHistory[tickcount]["properties"][propertyLabel]["adoption"]) // width] = propertyRepresentation
+                            graphX[(worldInhabitantHistory[tickcount]["properties"][propertyLabel]["adoption"] + 1) // width] = "'"
+                            graphX[(worldInhabitantHistory[tickcount]["properties"][propertyLabel]["expression"]) // width] = propertyRepresentation
+
+                        graphX[(worldInhabitantHistory[tickcount]["total"]) // width] = "*"
+
+                        for tally in range(0, worldInhabitantHistory[tickcount]["total"]):
+                            if tally % (10 * width) == 0:
+                                for letter in range(0, len(str(tally))):
+                                    graphHeading[(tally // width) + letter] = str(tally)[letter]
+
+                        graphData.append("".join(graphX)[1:])
+
+                    if not os.path.exists("graphs"):
+                        os.makedirs("graphs")
+                    
+                    file = open(os.path.join("graphs", *filename.split("/")), "w")
+                    
+                    file.write(("".join(graphHeading[1:])) + "\n" + ("\n".join(graphData)))
+                    file.close()
+
+                    print("Written graph to graphs/" + str(filename))
+                except:
+                    print("Could not write graph!")
         else:
             print("Command not understood!")
 
