@@ -1,0 +1,6 @@
+# Basic script
+
+new inhabitant batch: male, male, $, 50
+new inhabitant batch: female, female, $, 50
+
+repeat: $, 100

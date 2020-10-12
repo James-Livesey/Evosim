@@ -2,6 +2,7 @@ import time
 import os
 import json
 
+import scripting
 import environment
 import inhabitants
 import properties
@@ -15,10 +16,18 @@ worldInhabitantHistory = []
 
 commandRepetition = 0
 
+def runInput(message):
+    if len(scripting.inputsToProcess) > 0:
+        print(message + scripting.inputsToProcess[0])
+
+        return scripting.inputsToProcess.pop(0)
+    else:
+        return input(message)
+
 try:
     while True:
         if commandRepetition == 0:
-            command = input("Evosim > ").lower().strip()
+            command = runInput("Evosim > ").lower().strip()
 
         if command == "":
             # Tick
@@ -80,21 +89,33 @@ try:
             print(helpfile.read())
 
             helpfile.close()
+        elif command == "run":
+            # Run a script
+
+            filename = runInput("Filename of script to run? (Leave blank to cancel) > ")
+
+            if filename != "":
+                try:
+                    scripting.processScript("scripts/" + filename)
+
+                    print("Loaded script")
+                except IOError:
+                    print("Could not run script!")
         elif command == "repeat":
             # Repeat command
 
             try:
-                command = input("Command to repeat? (Type '#' to cancel) > ")
+                command = runInput("Command to repeat? (Type '#' to cancel) > ")
 
                 if command != "#":
-                    commandRepetition = int(input("Number of times to repeat command? (Leave blank to cancel) > ")) + 1
+                    commandRepetition = int(runInput("Number of times to repeat command? (Leave blank to cancel) > ")) + 1
             except:
                 pass
         elif command == "new property":
             # New property
 
-            propertyLabel = input("New property's label? (Leave blank to generate) > ")
-            propertyIsDominant = input("Is property dominant? [y/N] > ").lower() == "y"
+            propertyLabel = runInput("New property's label? (Leave blank to generate) > ")
+            propertyIsDominant = runInput("Is property dominant? [y/N] > ").lower() == "y"
 
             newProperty = properties.Property(propertyIsDominant)
 
@@ -112,17 +133,17 @@ try:
         elif command == "new inhabitant":
             # New inhabitant
 
-            inhabitantLabel = input("New inhabitant's label? (Leave blank to generate) > ")
+            inhabitantLabel = runInput("New inhabitant's label? (Leave blank to generate) > ")
 
             inhabitantPropertyPairs = []
             firstPropertyLabel = "-"
             secondPropertyLabel = "-"
 
             while firstPropertyLabel != "":
-                firstPropertyLabel = input("First property label in property pair? (Leave blank to exit listing) > ")
+                firstPropertyLabel = runInput("First property label in property pair? (Leave blank to exit listing) > ")
 
                 if firstPropertyLabel != "":
-                    secondPropertyLabel = input("Second property label in property pair? > ")
+                    secondPropertyLabel = runInput("Second property label in property pair? > ")
 
                 if firstPropertyLabel != "" and secondPropertyLabel != "":
                     firstProperty = None
@@ -164,10 +185,10 @@ try:
             secondPropertyLabel = "-"
 
             while firstPropertyLabel != "":
-                firstPropertyLabel = input("First property label in property pair? (Leave blank to exit listing) > ")
+                firstPropertyLabel = runInput("First property label in property pair? (Leave blank to exit listing) > ")
 
                 if firstPropertyLabel != "":
-                    secondPropertyLabel = input("Second property label in property pair? > ")
+                    secondPropertyLabel = runInput("Second property label in property pair? > ")
 
                 if firstPropertyLabel != "" and secondPropertyLabel != "":
                     firstProperty = None
@@ -194,7 +215,7 @@ try:
                     print("Exited listing")
 
             try:
-                for i in range(0, int(input("Number of inhabitants to create? (Leave blank to cancel) > "))):
+                for i in range(0, int(runInput("Number of inhabitants to create? (Leave blank to cancel) > "))):
                     for propertyPair in inhabitantPropertyPairs:
                         propertyPair.selectDominantProperty()
 
@@ -218,7 +239,7 @@ try:
         elif command == "inspect inhabitant":
             # Inspect an inhabitant
 
-            inhabitantLabel = input("Label of inhabitant to inspect? (Leave blank to cancel) > ")
+            inhabitantLabel = runInput("Label of inhabitant to inspect? (Leave blank to cancel) > ")
 
             for inhabitant in world.inhabitants:
                 if inhabitant.label == inhabitantLabel:
@@ -245,11 +266,11 @@ try:
         elif command == "new condition":
             # New condition
 
-            conditionLabel = input("New condition's label? (Leave blank to generate) > ")
-            affectingPropertyLabel = input("Affecting property's label? (Leave blank to cancel) > ")
+            conditionLabel = runInput("New condition's label? (Leave blank to generate) > ")
+            affectingPropertyLabel = runInput("Affecting property's label? (Leave blank to cancel) > ")
 
             try:
-                decay = int(input("Decay length? (Leave blank for 5) > "))
+                decay = int(runInput("Decay length? (Leave blank for 5) > "))
             except:
                 decay = 5
 
@@ -276,7 +297,7 @@ try:
         elif command == "calculate property adoption":
             # Calculate a property's adoption rate
 
-            propertyLabel = input("Property label to use in calculation? (Leave blank to cancel) > ")
+            propertyLabel = runInput("Property label to use in calculation? (Leave blank to cancel) > ")
 
             totalInhabitants = 0
             totalAdoption = 0
@@ -312,7 +333,7 @@ try:
         elif command == "export inhabitant history to json":
             # Export the world's inhabitant history to a JSON file
 
-            filename = input("Filename to export to? (Leave blank to cancel) > ")
+            filename = runInput("Filename to export to? (Leave blank to cancel) > ")
 
             if filename != "":
                 try:
@@ -330,14 +351,14 @@ try:
         elif command == "graph inhabitant history":
             # Graph the world's inhabitant history to a file
 
-            filename = input("Filename to graph to? (Leave blank to cancel) > ")
+            filename = runInput("Filename to graph to? (Leave blank to cancel) > ")
 
             if filename != "":
                 try:
                     width = 1
 
                     try:
-                        width = int(input("Width condensation of graph data? (Leave blank for 1) > "))
+                        width = int(runInput("Width condensation of graph data? (Leave blank for 1) > "))
                     except:
                         pass
 

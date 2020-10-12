@@ -63,6 +63,8 @@ python3 main.py
       property pairs, and property pairs can contain two of the same property.
     - `Second property label in property pair?`: The second property to assign
       to the inhabitant in a new property pair.
+    - `Number of inhabitants to create?`: The number of inhabitants to create
+      and place into the world.
 * **`list inhabitants`**: List the inhabitants that are currently alive.
 * **`inspect inhabitant`**: View the properties and values of a particular
   inhabitant.
