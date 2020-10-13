@@ -89,7 +89,7 @@ try:
             print(helpfile.read())
 
             helpfile.close()
-        elif command == "run":
+        elif command == "run script":
             # Run a script
 
             filename = runInput("Filename of script to run? (Leave blank to cancel) > ")
@@ -100,7 +100,7 @@ try:
 
                     print("Loaded script")
                 except IOError:
-                    print("Could not run script!")
+                    print("Could not run script (filename may be incorrect)!")
         elif command == "repeat":
             # Repeat command
 

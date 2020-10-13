@@ -41,6 +41,9 @@ python3 main.py
 * **(Pressing Enter)**: Advance the world's clock by 1 tick.
 * **`exit`**: Exit Evosim.
 * **`help`**: Display this readme.
+* **`run script`**: Run a script in the `scripts` folder.
+    - `Filename of script to run?`: The name of the script's file in the
+      `scripts` folder.
 * **`repeat`**: Repeat a command.
     - `Command to repeat?`: Command to repeatedly execute. Press `#` to cancel.
     - `Number of times to repeat command?`: Number of times to repeat the
